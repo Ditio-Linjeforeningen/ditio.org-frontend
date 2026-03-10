@@ -7,22 +7,26 @@ type EventCardProps = {
 
 export const EventCard = ({ event }: EventCardProps) => {
   return (
-    <div className="border border-black bg-white">
-      <img
-        src={event.image}
-        alt={event.title}
-        className="h-40 w-full object-cover"
-      />
-      <div className="p-4">
-        <h2 className="text-lg">{event.title}</h2>
-        <p className="text-sm">{event.description}</p>
-        <p className="text-sm">{event.location}</p>
-        <p className="text-sm">{event.categoryId}</p>
-        <p className="text-sm">{event.date}</p>
+    <div className="group bg-white border border-slate-100 shadow-sm flex flex-col h-full">
+      <div className="h-48">
+        <img
+          src={event.image}
+          alt={event.title}
+          className="h-full w-full object-cover"
+        />
+      </div>
 
+      <div className="p-6 flex flex-col">
+        <p className="text-xs font-bold mb-1">{event.date}</p>
+        <h2 className="text-xl font-black mb-3">{event.title}</h2>
+        <p className="text-sm mb-4">{event.description}</p>
+
+        <div className="flex items-center text-xs mb-6">
+          <p className="">Sted: {event.location}</p>
+        </div>
         <Link
           to={`/events/${event.id}`}
-          className="inline-block mt-2 px-4 py-2 rounded bg-gray-200"
+          className="text-sm font-bold uppercase border-b-2 pb-1 self-start hover:text-ditio-blue hover:border-ditio-blue transition-colors"
         >
           Les mer
         </Link>

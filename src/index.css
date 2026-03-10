@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ditio-navy: var(--ditio-navy);
+  --color-ditio-blue: var(--ditio-blue);
+}
+
+:root {
+  --ditio-navy: #1a2a44;
+  --ditio-blue: #2a6ba3;
+}

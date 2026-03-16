@@ -14,6 +14,9 @@ export default function Navbar() {
         <Link to="/events" className="hover:text-ditio-blue transition">
           Arrangementer
         </Link>
+        <Link to="/admin/events" className="hover:text-ditio-blue transition">
+          Admin
+        </Link>
         <Link to="/om-oss" className="hover:text-ditio-blue transition">
           Om oss
         </Link>

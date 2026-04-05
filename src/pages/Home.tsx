@@ -1,31 +1,9 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { EventCard } from "../components/EventCard";
-import type { Event } from "../types/event";
+import { useEvents } from "../hooks/useEvents";
 
 export default function Home() {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/events");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: Event[] = await response.json();
-        setEvents(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const { events, loading, error } = useEvents();
 
   return (
     <div className="min-h-screen bg-white text-black">

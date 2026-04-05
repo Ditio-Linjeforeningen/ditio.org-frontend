@@ -17,7 +17,7 @@ type EventCardProps = {
 };
 
 export const EventCard = ({ event }: EventCardProps) => {
-  const image = `https://picsum.photos/seed/${event.eventId}/800/600`;
+  const image = `https://picsum.photos/seed/${event.eventId}/400/300`;
   const date = formatDate(event.startTime);
   const description = event.description ?? "";
   const location = event.location ?? "Ikke satt";
@@ -29,6 +29,8 @@ export const EventCard = ({ event }: EventCardProps) => {
           src={image}
           alt={event.title}
           className="h-full w-full object-cover"
+          loading="lazy"
+          decoding="async"
         />
       </div>
 

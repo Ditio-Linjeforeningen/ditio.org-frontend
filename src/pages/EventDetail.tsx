@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import type { Event } from "../types/event";
+import { useEvent } from "../hooks/useEvents";
 
 const formatDate = (value?: string | null) => {
   if (!value) {
@@ -26,33 +25,7 @@ const formatDateTime = (value?: string | null) => {
 
 export default function EventDetail() {
   const { id } = useParams<{ id: string }>();
-  const [event, setEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!id) {
-        setError("Missing event id");
-        setLoading(false);
-        return;
-      }
-      try {
-        const response = await fetch(`/events/${id}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: Event = await response.json();
-        setEvent(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [id]);
+  const { event, loading, error } = useEvent(id);
 
   if (loading) {
     return (

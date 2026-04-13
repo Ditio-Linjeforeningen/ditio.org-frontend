@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { eventsApi } from '../../api/events';
-import type { EventFormData } from '../../types/event';
+import type { EventFormData, EventFormState } from '../../types/event';
 import styles from './AdminEvents.module.css';
 
-const EMPTY: EventFormData = {
+const EMPTY: EventFormState = {
   title: '',
   description: '',
   startTime: '',
@@ -25,7 +25,7 @@ export default function AdminEventForm() {
   const isEditing = Boolean(id);
   const navigate = useNavigate();
 
-  const [form, setForm] = useState<EventFormData>(EMPTY);
+  const [form, setForm] = useState<EventFormState>(EMPTY);
   const [loading, setLoading] = useState(isEditing);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -118,7 +118,7 @@ export default function AdminEventForm() {
           Description
           <textarea
             name="description"
-            value={form.description ?? ''}
+            value={form.description}
             onChange={handleChange}
             rows={5}
           />
@@ -140,7 +140,7 @@ export default function AdminEventForm() {
           <input
             type="datetime-local"
             name="endTime"
-            value={form.endTime ?? ''}
+            value={form.endTime}
             onChange={handleChange}
           />
         </label>
@@ -149,7 +149,7 @@ export default function AdminEventForm() {
           Location
           <input
             name="location"
-            value={form.location ?? ''}
+            value={form.location}
             onChange={handleChange}
           />
         </label>

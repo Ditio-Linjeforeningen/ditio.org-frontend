@@ -7,4 +7,4 @@ export type AuthState = {
   refresh: () => void;
 };
 
-export const AuthContext = createContext<AuthState>(null!);
+export const AuthContext = createContext<AuthState | undefined>(undefined);

@@ -64,7 +64,9 @@ export default function EventForm({
         startTime: fromDatetimeLocal(startTime),
         endTime: fromDatetimeLocal(endTime),
         location: location.trim() || null,
-        maxAttendees: maxAttendees ? parseInt(maxAttendees, 10) : null,
+        maxAttendees: maxAttendees
+          ? (parseInt(maxAttendees, 10) || null)
+          : null,
         isPublished,
       });
     } catch (err) {

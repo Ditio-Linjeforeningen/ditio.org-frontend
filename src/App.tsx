@@ -17,6 +17,7 @@ export default function App() {
         <Route path="/events/" element={<Events />} />
         <Route path="/events/:id" element={<EventDetail />} />
         <Route path="/about" element={<About />} />
+        <Route path="/om-oss" element={<About />} />
         <Route path="/admin/events" element={<AdminEvents />} />
         <Route path="/admin/events/:id" element={<AdminEventDetail />} />
       </Routes>

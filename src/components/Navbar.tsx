@@ -32,6 +32,7 @@ export default function Navbar() {
         {!loading &&
           (user ? (
             <button
+              type="button"
               onClick={() => authService.logout()}
               className="border border-ditio-navy text-ditio-navy px-4 py-1.5 hover:bg-slate-100 transition normal-case"
             >
@@ -39,6 +40,7 @@ export default function Navbar() {
             </button>
           ) : (
             <button
+              type="button"
               onClick={() => authService.startLogin()}
               className="bg-ditio-navy text-white px-4 py-1.5 hover:bg-black transition normal-case"
             >

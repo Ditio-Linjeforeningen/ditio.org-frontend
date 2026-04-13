@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { authService } from ".";
 import type { User } from ".";
 import { AuthContext } from "./context";
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -13,6 +13,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     authService
       .getMe()
       .then(setUser)
+      .catch(() => setUser(null))
       .finally(() => setLoading(false));
   };
 
@@ -22,6 +23,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     authService
       .getMe()
       .then(setUser)
+      .catch(() => setUser(null))
       .finally(() => setLoading(false));
   }, []);
 

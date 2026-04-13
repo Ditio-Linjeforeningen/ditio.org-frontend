@@ -1,27 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEvent } from "../hooks/useEvents";
-
-const formatDate = (value?: string | null) => {
-  if (!value) {
-    return "Ikke satt";
-  }
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return value;
-  }
-  return parsed.toLocaleDateString("nb-NO");
-};
-
-const formatDateTime = (value?: string | null) => {
-  if (!value) {
-    return "Ikke satt";
-  }
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return value;
-  }
-  return parsed.toLocaleString("nb-NO");
-};
+import { formatDate, formatDateTime } from "../utils/dates";
 
 export default function EventDetail() {
   const { id } = useParams<{ id: string }>();

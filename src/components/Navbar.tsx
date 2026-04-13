@@ -23,12 +23,12 @@ export default function Navbar() {
             Admin
           </Link>
         )}
-        <Link to="/om-oss" className="hover:text-ditio-blue transition">
+        <Link to="/about" className="hover:text-ditio-blue transition">
           Om oss
         </Link>
-        <Link to="/kontakt" className="hover:text-ditio-blue transition">
+        <span className="text-slate-500 cursor-default">
           Kontakt
-        </Link>
+        </span>
         {!loading &&
           (user ? (
             <button

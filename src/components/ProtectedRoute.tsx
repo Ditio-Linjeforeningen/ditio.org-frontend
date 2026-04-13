@@ -1,3 +1,4 @@
+import { type ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
 
@@ -5,7 +6,7 @@ export default function ProtectedRoute({
   children,
   adminOnly = false,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   adminOnly?: boolean;
 }) {
   const { user, loading } = useAuth();

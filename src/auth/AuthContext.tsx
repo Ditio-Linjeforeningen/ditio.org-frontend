@@ -1,29 +1,28 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { authService } from ".";
 import type { User } from ".";
-
-type AuthState = {
-  user: User | null;
-  loading: boolean;
-  refresh: () => void;
-};
-
-const AuthContext = createContext<AuthState>(null!);
+import { AuthContext } from "./context";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const refresh = () => {
-    setLoading(true);
+  const loadUser = (showLoading: boolean) => {
+    if (showLoading) setLoading(true);
+
     authService
       .getMe()
       .then(setUser)
       .finally(() => setLoading(false));
   };
 
+  const refresh = () => loadUser(true);
+
   useEffect(() => {
-    refresh();
+    authService
+      .getMe()
+      .then(setUser)
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -32,5 +31,3 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     </AuthContext.Provider>
   );
 }
-
-export const useAuth = () => useContext(AuthContext);

@@ -1,8 +1,10 @@
-import { EventCard } from "../components/EventCard";
-import { mockEvents as events } from "../data/mockEvent";
 import { Link } from "react-router-dom";
+import { EventCard } from "../components/EventCard";
+import { useEvents } from "../hooks/useEvents";
 
 export default function Home() {
+  const { events, loading, error } = useEvents();
+
   return (
     <div className="min-h-screen bg-white text-black">
       <section className="px-8 py-24 max-w-7xl mx-auto text-center">
@@ -41,11 +43,18 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events.slice(0, 3).map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
+          {loading && <p className="text-sm">Laster arrangementer...</p>}
+          {error && <p className="text-sm text-red-600">Feil: {error}</p>}
+          {!loading && !error && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {events.slice(0, 3).map((event) => (
+                <EventCard key={event.eventId} event={event} />
+              ))}
+              {events.length === 0 && (
+                <p className="text-sm ">Ingen arrangementer enda.</p>
+              )}
+            </div>
+          )}
         </div>
       </section>
 

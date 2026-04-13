@@ -1,12 +1,25 @@
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Events from './pages/Events';
+import EventDetail from './pages/EventDetail';
+import About from './pages/About';
+import AdminEvents from './pages/AdminEvents';
+import AdminEventDetail from './pages/AdminEventDetail';
 
-function App() {
-
+export default function App() {
   return (
-    <>
-      <h1>Ditio</h1>
-    </>
-  )
-}
+    <Router>
+      <Navbar />
 
-export default App
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/events/" element={<Events />} />
+        <Route path="/events/:id" element={<EventDetail />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/admin/events" element={<AdminEvents />} />
+        <Route path="/admin/events/:id" element={<AdminEventDetail />} />
+      </Routes>
+    </Router>
+  );
+}

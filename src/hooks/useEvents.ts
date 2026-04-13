@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getEventById, listEvents } from "../services/event/eventService";
 import type { Event } from "../types/event";
 
 type FetchListState = {
@@ -21,11 +22,7 @@ export function useEvents(): FetchListState {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/events");
-        if (!response.ok) {
-          throw new Error(`HTTP-feil! Status: ${response.status}`);
-        }
-        const data: Event[] = await response.json();
+        const data = await listEvents();
         setEvents(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "En feil oppstod");
@@ -53,14 +50,7 @@ export function useEvent(id: string | undefined): FetchDetailState {
         return;
       }
       try {
-        const response = await fetch(`/events/${id}`);
-        if (!response.ok) {
-          if (response.status === 404) {
-            throw new Error("Arrangementet ble ikke funnet");
-          }
-          throw new Error(`HTTP-feil! Status: ${response.status}`);
-        }
-        const data: Event = await response.json();
+        const data = await getEventById(id);
         setEvent(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "En feil oppstod");

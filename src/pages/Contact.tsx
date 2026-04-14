@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { boardMembers, komiteer } from "../data/about";
 import Footer from "../components/Footer";
 

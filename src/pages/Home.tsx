@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { EventCard } from "../components/EventCard";
 import { useEvents } from "../hooks/useEvents";
+import Footer from "../components/Footer";
 
 export default function Home() {
   const { events, loading, error } = useEvents();
@@ -76,27 +77,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="py-12 px-8 border-t border-slate-100 text-xs">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-center md:text-left">
-            <p className="font-bold text-black mb-1">DITIO LINJEFORENING</p>
-            <p>Pilestredet 35, 0166 Oslo</p>
-          </div>
-
-          <div className="flex gap-6 font-bold">
-            <a href="#" className="hover:text-ditio-blue">
-              Instagram
-            </a>
-            <a href="#" className="hover:text-ditio-blue">
-              LinkedIn
-            </a>
-          </div>
-
-          <div className="text-center md:text-right">
-            <p>Org.nr: 936 009 395</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

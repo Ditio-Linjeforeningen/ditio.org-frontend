@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { boardMembers, komiteer } from "../data/about";
+import Footer from "../components/Footer";
 
 function initials(name: string) {
   const parts = name.trim().split(" ");
@@ -131,24 +132,7 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-100 bg-slate-50 py-8 px-8">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
-          <div>
-            <p className="font-black text-slate-900 uppercase tracking-widest text-xs mb-1">Ditio Linjeforening</p>
-            <p>Pilestredet 35, 0166 Oslo &middot; Org.nr: 936 009 395</p>
-          </div>
-          <div className="flex gap-6 items-center">
-            <Link to="/om-oss" className="font-bold text-slate-500 hover:text-ditio-blue transition-colors">
-              Om oss
-            </Link>
-            <div className="flex gap-6 font-bold text-slate-500">
-              <a href="#" className="hover:text-ditio-blue transition-colors">Instagram</a>
-              <a href="#" className="hover:text-ditio-blue transition-colors">LinkedIn</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
     </main>
   );

@@ -1,5 +1,6 @@
 import { EventCard } from "../components/EventCard";
 import { useEvents } from "../hooks/useEvents";
+import Footer from "../components/Footer";
 
 export default function Events() {
   const { events, loading, error } = useEvents();
@@ -21,5 +22,6 @@ export default function Events() {
         </div>
       )}
     </div>
+    <Footer />
   );
 }

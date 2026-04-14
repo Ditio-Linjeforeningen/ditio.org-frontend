@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { boardMembers, komiteer, vedtekter, type Vedtekt } from "../data/about";
 
 const osloMetLink = (
@@ -61,7 +62,7 @@ export default function About() {
     <main className="min-h-screen bg-slate-50 text-slate-900">
 
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-8 py-16">
+      <section className="max-w-6xl mx-auto px-8 py-16 flex flex-col items-center text-center">
         <p className="text-xs uppercase tracking-widest text-ditio-blue font-semibold mb-4">Om oss</p>
         <h1 className="text-5xl md:text-6xl font-black leading-tight mb-6">
           Om Ditio-<br />linjeforeningen
@@ -101,7 +102,7 @@ export default function About() {
           <SectionHeader
             label="Styret 2025–2026"
             title="Nåværende styre"
-            sub={<>Valgt inn 25.09.2025 &middot;{" "}<a href="mailto:styret@ditio.org" className="text-ditio-blue underline underline-offset-2">styret@ditio.org</a></>}
+            sub="Valgt inn 25.09.2025"
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {boardMembers.map((m) => (
@@ -111,14 +112,7 @@ export default function About() {
                 </div>
                 <p className="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1">{m.role}</p>
                 <p className="text-sm font-bold text-slate-900 mb-1">{m.name}</p>
-                <p className="text-xs text-slate-400 mb-3">{m.year}</p>
-                {m.emails.length > 0 && (
-                  <div className="flex flex-col gap-1">
-                    {m.emails.map((e) => (
-                      <a key={e} href={`mailto:${e}`} className="text-xs text-ditio-blue hover:underline underline-offset-2">{e}</a>
-                    ))}
-                  </div>
-                )}
+                <p className="text-xs text-slate-400">{m.year}</p>
               </div>
             ))}
           </div>
@@ -139,13 +133,7 @@ export default function About() {
                 {String(i + 1).padStart(2, "0")} <span className="flex-1 h-px bg-slate-100" />
               </p>
               <h3 className="text-base font-bold mb-3 text-slate-900">{k.navn}</h3>
-              <p className="text-sm text-slate-500 leading-relaxed mb-5">{k.beskrivelse}</p>
-              <div className="border-t border-slate-100 pt-4">
-                <p className="text-xs text-slate-400 mb-1">
-                  <span className="font-semibold text-slate-600">{k.kontakt}</span> &middot; {k.rolle}
-                </p>
-                <a href={`mailto:${k.email}`} className="text-xs text-ditio-blue hover:underline underline-offset-2 font-medium">{k.email}</a>
-              </div>
+              <p className="text-sm text-slate-500 leading-relaxed">{k.beskrivelse}</p>
               <span className={hoverBar} />
             </div>
           ))}
@@ -222,17 +210,13 @@ export default function About() {
         <p className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-3">Ta kontakt</p>
         <h3 className="text-2xl font-black mb-2">Spørsmål?</h3>
         <p className="text-sm text-slate-500 mb-8">Kontakt oss direkte eller ta kontakt med et styremedlem.</p>
-        <div className="flex flex-col sm:flex-row gap-3">
-          {[
-            { tag: "Generelt", email: "kontakt@ditio.org" },
-            { tag: "Bedrift",  email: "bedrift@ditio.org" },
-          ].map((c) => (
-            <a key={c.email} href={`mailto:${c.email}`} className="flex items-center gap-3 border border-slate-200 hover:border-ditio-blue hover:bg-blue-50 transition-all px-5 py-3 text-sm font-semibold text-ditio-blue">
-              <span className="text-xs uppercase tracking-widest bg-ditio-blue/10 text-ditio-blue px-2 py-0.5 font-bold">{c.tag}</span>
-              {c.email}
-            </a>
-          ))}
-        </div>
+        <Link
+          to="/kontakt"
+          onClick={() => window.scrollTo(0, 0)}
+          className="border border-ditio-blue text-ditio-blue hover:bg-ditio-blue hover:text-white transition-colors px-8 py-3 text-xs font-bold uppercase tracking-widest"
+        >
+          Se kontaktinformasjon →
+        </Link>
       </section>
 
       {/* Footer */}

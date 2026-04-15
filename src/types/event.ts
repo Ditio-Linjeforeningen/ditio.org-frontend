@@ -8,3 +8,13 @@ export type Event = {
   maxAttendees?: number | null;
   isPublished: boolean;
 };
+
+export type NewEvent = {
+  title: string;
+  description?: string | null;
+  startTime: string;
+  endTime?: string | null;
+  location?: string | null;
+  maxAttendees?: number | null;
+  isPublished: boolean;
+};

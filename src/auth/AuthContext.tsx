@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { authService } from ".";
-import type { User } from ".";
+import { authService } from "../services/authService";
+import type { User } from "../types/auth";
 import { AuthContext } from "./context";
 
 export function AuthProvider({ children }: { children: ReactNode }) {

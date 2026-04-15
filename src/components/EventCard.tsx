@@ -1,6 +1,16 @@
 import { Link } from "react-router-dom";
 import type { Event } from "../types/event";
-import { formatDate } from "../utils/dates";
+
+const formatDate = (value?: string | null) => {
+  if (!value) {
+    return "Ikke satt";
+  }
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return value;
+  }
+  return parsed.toLocaleDateString("nb-NO");
+};
 
 type EventCardProps = {
   event: Event;

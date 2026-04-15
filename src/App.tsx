@@ -7,7 +7,7 @@ import About from "./pages/About";
 import AdminEvents from "./pages/AdminEvents";
 import AdminEventDetail from "./pages/AdminEventDetail";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { AuthProvider } from "./auth/AuthContext";
+import { AuthProvider } from "./auth";
 
 export default function App() {
   return (

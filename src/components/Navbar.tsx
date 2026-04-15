@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { authService } from "../auth";
-import { useAuth } from "../auth/useAuth";
+import { useAuth } from "../auth";
 
 export default function Navbar() {
   const { user, loading } = useAuth();
@@ -26,9 +26,7 @@ export default function Navbar() {
         <Link to="/about" className="hover:text-ditio-blue transition">
           Om oss
         </Link>
-        <span className="text-slate-500 cursor-default">
-          Kontakt
-        </span>
+        <span className="text-slate-500 cursor-default">Kontakt</span>
         {!loading &&
           (user ? (
             <button

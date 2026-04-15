@@ -7,8 +7,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const loadUser = (showLoading: boolean) => {
-    if (showLoading) setLoading(true);
+  const loadUser = () => {
+    setLoading(true);
 
     authService
       .getMe()
@@ -17,7 +17,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setLoading(false));
   };
 
-  const refresh = () => loadUser(true);
+  const refresh = () => loadUser();
 
   useEffect(() => {
     authService

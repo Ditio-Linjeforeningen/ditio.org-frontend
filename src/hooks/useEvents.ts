@@ -47,6 +47,9 @@ export function useEvent(id: string | undefined): FetchDetailState {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      setEvent(null);
       if (!id) {
         setError("Manglende arrangement-ID");
         setLoading(false);

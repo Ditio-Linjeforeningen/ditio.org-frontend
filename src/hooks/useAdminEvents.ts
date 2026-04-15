@@ -5,7 +5,7 @@ import {
   getEventById,
   listEvents,
   updateEvent,
-} from "../services/event/eventService";
+} from "../services/eventService";
 import type { Event, NewEvent } from "../types/event";
 
 type AdminEventsState = {
@@ -144,7 +144,7 @@ export function useAdminEvent(id: string | undefined): AdminEventState {
         setIsSubmitting(false);
       }
     },
-    [id]
+    [id],
   );
 
   const removeEventById = useCallback(async () => {

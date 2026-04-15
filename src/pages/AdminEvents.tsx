@@ -3,10 +3,18 @@ import type { FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { useAdminEvents } from "../hooks/useAdminEvents";
 import type { NewEvent } from "../types/event";
+import { formatDateTime, validateEventDateRange } from "../utils/dates";
 
 export default function AdminEvents() {
-  const { events, loading, error, actionError, isSubmitting, createNewEvent, removeEvent } =
-    useAdminEvents();
+  const {
+    events,
+    loading,
+    error,
+    actionError,
+    isSubmitting,
+    createNewEvent,
+    removeEvent,
+  } = useAdminEvents();
 
   const [formState, setFormState] = useState<NewEvent>({
     title: "",
@@ -17,14 +25,33 @@ export default function AdminEvents() {
     maxAttendees: null,
     isPublished: false,
   });
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleCreateEvent = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const title = formState.title.trim();
+    if (!title) {
+      setFormError("Tittel kan ikke være tom.");
+      return;
+    }
+
+    const dateValidationError = validateEventDateRange(
+      formState.startTime,
+      formState.endTime || null,
+    );
+
+    if (dateValidationError) {
+      setFormError(dateValidationError);
+      return;
+    }
+
+    setFormError(null);
+
     try {
       await createNewEvent({
         ...formState,
-        title: formState.title.trim(),
+        title,
         description: formState.description?.trim() || null,
         location: formState.location?.trim() || null,
         startTime: formState.startTime,
@@ -47,7 +74,7 @@ export default function AdminEvents() {
 
   const handleDeleteEvent = async (eventId: string) => {
     const shouldDelete = window.confirm(
-      "Er du sikker på at du vil slette arrangementet?"
+      "Er du sikker på at du vil slette arrangementet?",
     );
 
     if (!shouldDelete) {
@@ -87,7 +114,10 @@ export default function AdminEvents() {
           placeholder="Beskrivelse"
           value={formState.description ?? ""}
           onChange={(event) =>
-            setFormState((prev) => ({ ...prev, description: event.target.value }))
+            setFormState((prev) => ({
+              ...prev,
+              description: event.target.value,
+            }))
           }
           className="rounded border border-slate-300 px-3 py-2 text-sm"
         />
@@ -97,7 +127,10 @@ export default function AdminEvents() {
             required
             value={formState.startTime ?? ""}
             onChange={(event) =>
-              setFormState((prev) => ({ ...prev, startTime: event.target.value }))
+              setFormState((prev) => ({
+                ...prev,
+                startTime: event.target.value,
+              }))
             }
             className="rounded border border-slate-300 px-3 py-2 text-sm"
           />
@@ -116,7 +149,10 @@ export default function AdminEvents() {
             placeholder="Sted"
             value={formState.location ?? ""}
             onChange={(event) =>
-              setFormState((prev) => ({ ...prev, location: event.target.value }))
+              setFormState((prev) => ({
+                ...prev,
+                location: event.target.value,
+              }))
             }
             className="rounded border border-slate-300 px-3 py-2 text-sm"
           />
@@ -156,7 +192,10 @@ export default function AdminEvents() {
         >
           {isSubmitting ? "Lagrer..." : "Opprett arrangement"}
         </button>
-        {actionError && <p className="text-sm text-red-600">Feil: {actionError}</p>}
+        {formError && <p className="text-sm text-red-600">Feil: {formError}</p>}
+        {actionError && (
+          <p className="text-sm text-red-600">Feil: {actionError}</p>
+        )}
       </form>
 
       {loading && <p className="mb-4 text-sm">Laster arrangementer...</p>}
@@ -168,6 +207,7 @@ export default function AdminEvents() {
             <tr>
               <th className="px-3 py-2">Tittel</th>
               <th className="px-3 py-2">Start</th>
+              <th className="px-3 py-2">Slutt</th>
               <th className="px-3 py-2">Sted</th>
               <th className="px-3 py-2">Publisert</th>
               <th className="px-3 py-2">Handlinger</th>
@@ -177,9 +217,12 @@ export default function AdminEvents() {
             {events.map((event) => (
               <tr key={event.eventId} className="border-t border-slate-200">
                 <td className="px-3 py-2 font-medium">{event.title}</td>
-                <td className="px-3 py-2">{event.startTime ?? "Ikke satt"}</td>
+                <td className="px-3 py-2">{formatDateTime(event.startTime)}</td>
+                <td className="px-3 py-2">{formatDateTime(event.endTime)}</td>
                 <td className="px-3 py-2">{event.location ?? "Ikke satt"}</td>
-                <td className="px-3 py-2">{event.isPublished ? "Ja" : "Nei"}</td>
+                <td className="px-3 py-2">
+                  {event.isPublished ? "Ja" : "Nei"}
+                </td>
                 <td className="px-3 py-2 flex gap-2">
                   <Link
                     to={`/admin/events/${event.eventId}`}
@@ -200,7 +243,7 @@ export default function AdminEvents() {
             ))}
             {!loading && events.length === 0 && (
               <tr className="border-t border-slate-200">
-                <td className="px-3 py-2 text-slate-500" colSpan={5}>
+                <td className="px-3 py-2 text-slate-500" colSpan={6}>
                   Ingen arrangementer enda.
                 </td>
               </tr>

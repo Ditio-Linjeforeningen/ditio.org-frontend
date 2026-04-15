@@ -1,4 +1,4 @@
-import type { Event, NewEvent } from "../../types/event";
+import type { Event, NewEvent } from "../types/event";
 
 const EVENTS_BASE_PATH = "/events";
 
@@ -46,10 +46,7 @@ export async function createEvent(input: NewEvent): Promise<Event> {
   return (await response.json()) as Event;
 }
 
-export async function updateEvent(
-  id: string,
-  input: NewEvent
-): Promise<Event> {
+export async function updateEvent(id: string, input: NewEvent): Promise<Event> {
   const response = await fetch(`${EVENTS_BASE_PATH}/${id}`, {
     method: "PUT",
     headers: {

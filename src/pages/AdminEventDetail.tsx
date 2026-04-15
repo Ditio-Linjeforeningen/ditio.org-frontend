@@ -4,19 +4,11 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAdminEvent } from "../hooks/useAdminEvents";
 import type { Event } from "../types/event";
 import type { NewEvent } from "../types/event";
-
-const formatDateTime = (value?: string | null) => {
-  if (!value) {
-    return "Ikke satt";
-  }
-
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return value;
-  }
-
-  return parsed.toLocaleString("nb-NO");
-};
+import {
+  formatDateTime,
+  toDateTimeLocalValue,
+  validateEventDateRange,
+} from "../utils/dates";
 
 const EMPTY_FORM_STATE: NewEvent = {
   title: "",
@@ -31,8 +23,8 @@ const EMPTY_FORM_STATE: NewEvent = {
 const buildFormStateFromEvent = (event: Event): NewEvent => ({
   title: event.title,
   description: event.description ?? "",
-  startTime: event.startTime ?? "",
-  endTime: event.endTime ?? "",
+  startTime: toDateTimeLocalValue(event.startTime),
+  endTime: toDateTimeLocalValue(event.endTime),
   location: event.location ?? "",
   maxAttendees: event.maxAttendees ?? null,
   isPublished: event.isPublished,
@@ -41,19 +33,47 @@ const buildFormStateFromEvent = (event: Event): NewEvent => ({
 export default function AdminEventDetail() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { event, loading, error, actionError, isSubmitting, saveEvent, removeEvent } =
-    useAdminEvent(id);
+  const {
+    event,
+    loading,
+    error,
+    actionError,
+    isSubmitting,
+    saveEvent,
+    removeEvent,
+  } = useAdminEvent(id);
   const [draftFormState, setDraftFormState] = useState<NewEvent | null>(null);
-  const eventFormState = event ? buildFormStateFromEvent(event) : EMPTY_FORM_STATE;
+  const [formError, setFormError] = useState<string | null>(null);
+  const eventFormState = event
+    ? buildFormStateFromEvent(event)
+    : EMPTY_FORM_STATE;
   const formState = draftFormState ?? eventFormState;
 
   const handleSubmit = async (eventForm: FormEvent<HTMLFormElement>) => {
     eventForm.preventDefault();
 
+    const title = formState.title.trim();
+    if (!title) {
+      setFormError("Tittel kan ikke være tom.");
+      return;
+    }
+
+    const dateValidationError = validateEventDateRange(
+      formState.startTime,
+      formState.endTime || null,
+    );
+
+    if (dateValidationError) {
+      setFormError(dateValidationError);
+      return;
+    }
+
+    setFormError(null);
+
     try {
       await saveEvent({
         ...formState,
-        title: formState.title.trim(),
+        title,
         description: formState.description?.trim() || null,
         location: formState.location?.trim() || null,
         startTime: formState.startTime,
@@ -67,7 +87,7 @@ export default function AdminEventDetail() {
 
   const handleDelete = async () => {
     const shouldDelete = window.confirm(
-      "Er du sikker på at du vil slette arrangementet?"
+      "Er du sikker på at du vil slette arrangementet?",
     );
 
     if (!shouldDelete) {
@@ -103,9 +123,10 @@ export default function AdminEventDetail() {
   }
 
   const updateFormState = (updater: (prev: NewEvent) => NewEvent) => {
-    setDraftFormState((prev) => updater(prev ?? buildFormStateFromEvent(event)));
+    setDraftFormState((prev) =>
+      updater(prev ?? buildFormStateFromEvent(event)),
+    );
   };
-
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
@@ -125,7 +146,10 @@ export default function AdminEventDetail() {
           required
           value={formState.title}
           onChange={(eventInput) =>
-            updateFormState((prev) => ({ ...prev, title: eventInput.target.value }))
+            updateFormState((prev) => ({
+              ...prev,
+              title: eventInput.target.value,
+            }))
           }
           className="rounded border border-slate-300 px-3 py-2"
         />
@@ -223,6 +247,7 @@ export default function AdminEventDetail() {
           </button>
         </div>
 
+        {formError && <p className="text-red-600">Feil: {formError}</p>}
         {actionError && <p className="text-red-600">Feil: {actionError}</p>}
       </form>
 
@@ -231,10 +256,12 @@ export default function AdminEventDetail() {
           <span className="font-semibold">Event ID:</span> {event.eventId}
         </p>
         <p>
-          <span className="font-semibold">Start:</span> {formatDateTime(event.startTime)}
+          <span className="font-semibold">Start:</span>{" "}
+          {formatDateTime(event.startTime)}
         </p>
         <p>
-          <span className="font-semibold">Slutt:</span> {formatDateTime(event.endTime)}
+          <span className="font-semibold">Slutt:</span>{" "}
+          {formatDateTime(event.endTime)}
         </p>
       </div>
     </div>

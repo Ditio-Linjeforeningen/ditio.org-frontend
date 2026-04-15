@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getEventById, listEvents } from "../services/event/eventService";
+import { getEventById, listEvents } from "../services/eventService";
 import type { Event } from "../types/event";
 
 type FetchListState = {

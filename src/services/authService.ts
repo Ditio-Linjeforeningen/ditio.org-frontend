@@ -1,5 +1,5 @@
-import type { AuthService, User } from "./AuthService";
-import { ADMIN_IDS } from "./admins";
+import type { AuthService, User } from "../types/auth";
+import { ADMIN_IDS } from "../auth/admins";
 
 const FEIDE_LOGIN_PATH = "/feide/test";
 const AUTH_ME_PATH = "/api/users/meg";
@@ -64,7 +64,7 @@ function toUser(payload: unknown): User | null {
   };
 }
 
-export class FeideAuthService implements AuthService {
+class FeideAuthService implements AuthService {
   startLogin(): void {
     window.location.assign(FEIDE_LOGIN_PATH);
   }
@@ -101,3 +101,5 @@ export class FeideAuthService implements AuthService {
     window.location.assign(FEIDE_LOGOUT_PATH);
   }
 }
+
+export const authService: AuthService = new FeideAuthService();

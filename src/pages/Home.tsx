@@ -16,7 +16,7 @@ export default function Home() {
         </p>
         <div className="flex flex-wrap gap-4 justify-center">
           <Link
-            to="/events"
+            to="/arrangementer"
             className="bg-ditio-navy text-white px-8 py-3 font-bold hover:bg-black transition"
           >
             Se hva som skjer
@@ -37,7 +37,7 @@ export default function Home() {
               <h2 className="text-4xl font-black">Kommende</h2>
             </div>
             <Link
-              to="/events"
+              to="/arrangementer"
               className="text-xs font-bold uppercase border-b border-black pb-1"
             >
               Se alle

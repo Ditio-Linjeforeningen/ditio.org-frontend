@@ -15,7 +15,8 @@ type CreateRegistrationBody = {
   deadline: string;
 };
 
-const REGISTRATION_BASE_PATH = "/EventReg2";
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
+const REGISTRATION_BASE_PATH = `${API_BASE}/EventReg2`;
 
 const parseErrorMessage = async (response: Response): Promise<string> => {
   try {

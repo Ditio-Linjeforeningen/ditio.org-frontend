@@ -43,7 +43,7 @@ export const EventCard = ({ event }: EventCardProps) => {
           <p className="">Sted: {location}</p>
         </div>
         <Link
-          to={`/events/${event.eventId}`}
+          to={`/arrangementer/${event.eventId}`}
           className="text-sm font-bold uppercase border-b-2 pb-1 self-start hover:text-ditio-blue hover:border-ditio-blue transition-colors"
         >
           Les mer

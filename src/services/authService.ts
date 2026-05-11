@@ -1,9 +1,10 @@
 import type { AuthService, User } from "../types/auth";
 import { ADMIN_IDS } from "../auth/admins";
 
-const FEIDE_LOGIN_PATH = "/feide/test";
-const AUTH_ME_PATH = "/api/users/meg";
-const FEIDE_LOGOUT_PATH = "/logout";
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
+const FEIDE_LOGIN_PATH = `${API_BASE}${import.meta.env.VITE_FEIDE_LOGIN_PATH ?? "/feide/test"}`;
+const AUTH_ME_PATH = `${API_BASE}/api/users/meg`;
+const FEIDE_LOGOUT_PATH = `${API_BASE}/logout`;
 
 function toUser(payload: unknown): User | null {
   if (!payload || typeof payload !== "object") {

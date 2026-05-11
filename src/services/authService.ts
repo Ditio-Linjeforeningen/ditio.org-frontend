@@ -1,7 +1,7 @@
 import type { AuthService, User } from "../types/auth";
 import { ADMIN_IDS } from "../auth/admins";
 
-const FEIDE_LOGIN_PATH = "/feide/test";
+const FEIDE_LOGIN_PATH = import.meta.env.VITE_FEIDE_LOGIN_PATH ?? "/feide/test";
 const AUTH_ME_PATH = "/api/users/meg";
 const FEIDE_LOGOUT_PATH = "/logout";
 

@@ -15,7 +15,7 @@ export default function Navbar() {
       </Link>
 
       <div className="flex gap-6 text-xs font-bold uppercase tracking-widest items-center">
-        <Link to="/events" className="hover:text-ditio-blue transition">
+        <Link to="/arrangementer" className="hover:text-ditio-blue transition">
           Arrangementer
         </Link>
         {user?.isAdmin && (

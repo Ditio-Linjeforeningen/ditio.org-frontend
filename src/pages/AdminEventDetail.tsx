@@ -2,8 +2,11 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAdminEvent } from "../hooks/useAdminEvents";
+import { useAdminRegistrations } from "../hooks/useAdminRegistrations";
 import type { Event } from "../types/event";
 import type { NewEvent } from "../types/event";
+import type { RegistrationWithUser } from "../hooks/useAdminRegistrations";
+import { unregisterFromEvent } from "../services/registrationService";
 import {
   formatDateTime,
   toDateTimeLocalValue,
@@ -42,12 +45,25 @@ export default function AdminEventDetail() {
     saveEvent,
     removeEvent,
   } = useAdminEvent(id);
+  const {
+    registrations,
+    loading: registrationsLoading,
+    error: registrationsError,
+  } = useAdminRegistrations(id);
   const [draftFormState, setDraftFormState] = useState<NewEvent | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
+  const [selectedRegistration, setSelectedRegistration] = useState<RegistrationWithUser | null>(null);
+  const [confirmDeleteReg, setConfirmDeleteReg] = useState<boolean>(false);
+  const [deletingRegistration, setDeletingRegistration] = useState<boolean>(false);
+  const [deleteRegistrationError, setDeleteRegistrationError] = useState<string | null>(null);
+  const [deletedRegistrationIds, setDeletedRegistrationIds] = useState<Set<string>>(new Set());
   const eventFormState = event
     ? buildFormStateFromEvent(event)
     : EMPTY_FORM_STATE;
   const formState = draftFormState ?? eventFormState;
+  const visibleRegistrations = registrations.filter(
+    (registration) => !deletedRegistrationIds.has(registration.eventRegId),
+  );
 
   const handleSubmit = async (eventForm: FormEvent<HTMLFormElement>) => {
     eventForm.preventDefault();
@@ -81,7 +97,7 @@ export default function AdminEventDetail() {
       });
       setDraftFormState(null);
     } catch {
-      // Error state is already set by the hook.
+      // Hooken setter feilmelding selv.
     }
   };
 
@@ -98,7 +114,7 @@ export default function AdminEventDetail() {
       await removeEvent();
       navigate("/admin/events");
     } catch {
-      // Error state is already set by the hook.
+      // Hooken setter feilmelding selv.
     }
   };
 
@@ -263,6 +279,182 @@ export default function AdminEventDetail() {
           <span className="font-semibold">Slutt:</span>{" "}
           {formatDateTime(event.endTime)}
         </p>
+      </div>
+
+      <div className="mt-8 rounded border border-slate-200 p-4 text-sm">
+        <h2 className="mb-3 text-lg font-semibold">
+          Påmeldinger ({visibleRegistrations.length})
+        </h2>
+
+        {registrationsLoading && <p>Laster påmeldinger...</p>}
+        {registrationsError && (
+          <p className="text-red-600">Feil: {registrationsError}</p>
+        )}
+
+        {!registrationsLoading && !registrationsError && visibleRegistrations.length === 0 && (
+          <p>Ingen påmeldinger enda.</p>
+        )}
+
+        {!registrationsLoading && !registrationsError && visibleRegistrations.length > 0 && (
+          <div className="overflow-x-auto rounded border border-slate-200">
+            <table className="w-full border-collapse text-left text-sm">
+              <thead className="bg-slate-50">
+                <tr>
+                  <th className="px-3 py-2">ID</th>
+                  <th className="px-3 py-2">Navn</th>
+                  <th className="px-3 py-2">E-post</th>
+                  <th className="px-3 py-2">Status</th>
+                  <th className="px-3 py-2">Deadline</th>
+                </tr>
+              </thead>
+              <tbody>
+                {visibleRegistrations.map((registration) => (
+                  <tr
+                    key={registration.eventRegId}
+                    className="border-t border-slate-200 cursor-pointer hover:bg-slate-50"
+                    onClick={() => setSelectedRegistration(registration)}
+                  >
+                    <td className="px-3 py-2 font-mono text-xs">
+                      {registration.user_id}
+                    </td>
+                    <td className="px-3 py-2">
+                      {registration.user?.navn ?? "-"}
+                    </td>
+                    <td className="px-3 py-2">{registration.user?.email ?? "-"}</td>
+                    <td className="px-3 py-2">{registration.att_status}</td>
+                    <td className="px-3 py-2">
+                      {formatDateTime(registration.deadline)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+      {selectedRegistration && (
+        <div
+          className="fixed inset-0 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setSelectedRegistration(null);
+            }
+          }}
+        >
+          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+            <h2 className="mb-4 text-lg font-bold">Påmeldings-detaljer</h2>
+
+            <div className="mb-4 space-y-3 text-sm">
+              <p>
+                <span className="font-semibold">Bruker-ID:</span>
+                <br />
+                <code className="break-all text-xs text-slate-600">
+                  {selectedRegistration.user_id}
+                </code>
+              </p>
+              <p>
+                <span className="font-semibold">Navn:</span>
+                <br />
+                {selectedRegistration.user?.navn ?? "-"}
+              </p>
+              <p>
+                <span className="font-semibold">E-post:</span>
+                <br />
+                {selectedRegistration.user?.email ?? "-"}
+              </p>
+              <p>
+                <span className="font-semibold">Status:</span>
+                <br />
+                {selectedRegistration.att_status}
+              </p>
+              <p>
+                <span className="font-semibold">Deadline:</span>
+                <br />
+                {formatDateTime(selectedRegistration.deadline)}
+              </p>
+              <p>
+                <span className="font-semibold">Påmeldings-ID:</span>
+                <br />
+                <code className="break-all text-xs text-slate-600">
+                  {selectedRegistration.eventRegId}
+                </code>
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setSelectedRegistration(null)}
+                className="rounded border border-slate-300 px-4 py-2 font-semibold text-slate-900 hover:bg-slate-50"
+              >
+                Lukk
+              </button>
+              <button
+                onClick={() => setConfirmDeleteReg(true)}
+                className="rounded border border-red-300 px-4 py-2 font-semibold text-red-700 hover:bg-red-50"
+              >
+                Slett
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmDeleteReg && selectedRegistration && (
+        <div
+          className="fixed inset-0 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setConfirmDeleteReg(false);
+            }
+          }}
+        >
+          <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-lg">
+            <h2 className="mb-4 text-lg font-bold">Bekreft sletting</h2>
+            <p className="mb-6 text-sm text-slate-600">
+              Er du sikker på at du vil slette denne påmeldingen? Dette kan ikke angres.
+            </p>
+            {deleteRegistrationError && (
+              <p className="mb-4 text-sm text-red-600">{deleteRegistrationError}</p>
+            )}
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setConfirmDeleteReg(false)}
+                disabled={deletingRegistration}
+                className="rounded border border-slate-300 px-4 py-2 font-semibold text-slate-900 hover:bg-slate-50"
+              >
+                Avbryt
+              </button>
+              <button
+                onClick={async () => {
+                  setDeleteRegistrationError(null);
+                  setDeletingRegistration(true);
+
+                  try {
+                    await unregisterFromEvent(selectedRegistration.eventRegId);
+                    setDeletedRegistrationIds((prev) => {
+                      const next = new Set(prev);
+                      next.add(selectedRegistration.eventRegId);
+                      return next;
+                    });
+                    setSelectedRegistration(null);
+                    setConfirmDeleteReg(false);
+                  } catch (err) {
+                    setDeleteRegistrationError(
+                      err instanceof Error ? err.message : "Kunne ikke slette påmelding.",
+                    );
+                  } finally {
+                    setDeletingRegistration(false);
+                  }
+                }}
+                disabled={deletingRegistration}
+                className="rounded bg-red-700 px-4 py-2 font-semibold text-white hover:bg-red-800 disabled:opacity-50"
+              >
+                {deletingRegistration ? "Sletter..." : "Slett"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       </div>
     </div>
   );

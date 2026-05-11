@@ -1,6 +1,7 @@
 import type { Event, NewEvent } from "../types/event";
 
-const EVENTS_BASE_PATH = "/events";
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
+const EVENTS_BASE_PATH = `${API_BASE}/events`;
 
 const parseErrorMessage = async (response: Response): Promise<string> => {
   try {
@@ -34,7 +35,7 @@ export async function getEventById(id: string): Promise<Event> {
 }
 
 export async function createEvent(input: NewEvent): Promise<Event> {
-  const response = await fetch(EVENTS_BASE_PATH, {
+  const response = await fetch(`${EVENTS_BASE_PATH}/newEvent`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

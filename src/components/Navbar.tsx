@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { authService } from "../services/authService";
 
 export default function Navbar() {
+  const { user, loading } = useAuth();
+
   return (
     <nav className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto border-b border-slate-100">
       <Link to="/" className="flex items-center gap-3">
@@ -10,19 +14,39 @@ export default function Navbar() {
         </div>
       </Link>
 
-      <div className="flex gap-6 text-xs font-bold uppercase tracking-widest">
-        <Link to="/events" className="hover:text-ditio-blue transition">
+      <div className="flex gap-6 text-xs font-bold uppercase tracking-widest items-center">
+        <Link to="/arrangementer" className="hover:text-ditio-blue transition">
           Arrangementer
         </Link>
-        <Link to="/admin/events" className="hover:text-ditio-blue transition">
-          Admin
-        </Link>
-        <Link to="/om-oss" className="hover:text-ditio-blue transition">
+        {user?.isAdmin && (
+          <Link to="/admin/events" className="hover:text-ditio-blue transition">
+            Admin
+          </Link>
+        )}
+        <Link to="/about" className="hover:text-ditio-blue transition">
           Om oss
         </Link>
         <Link to="/kontakt" className="hover:text-ditio-blue transition">
           Kontakt
         </Link>
+        {!loading &&
+          (user ? (
+            <button
+              type="button"
+              onClick={() => authService.logout()}
+              className="border border-ditio-navy text-ditio-navy px-4 py-1.5 hover:bg-slate-100 transition normal-case"
+            >
+              Logg ut
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => authService.startLogin()}
+              className="bg-ditio-navy text-white px-4 py-1.5 hover:bg-black transition normal-case"
+            >
+              Logg inn
+            </button>
+          ))}
       </div>
     </nav>
   );

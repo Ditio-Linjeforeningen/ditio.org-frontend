@@ -26,7 +26,9 @@ export default function Navbar() {
         <Link to="/about" className="hover:text-ditio-blue transition">
           Om oss
         </Link>
-        <span className="text-slate-500 cursor-default">Kontakt</span>
+        <Link to="/kontakt" className="hover:text-ditio-blue transition">
+          Kontakt
+        </Link>
         {!loading &&
           (user ? (
             <button

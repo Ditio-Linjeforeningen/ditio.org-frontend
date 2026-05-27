@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEvent } from "../hooks/useEvents";
+import Footer from "../components/Footer";
 import { useRegistration } from "../hooks/useRegistration";
 import { useAuth } from "../hooks/useAuth";
 import { authService } from "../services/authService";
@@ -107,173 +108,176 @@ export default function EventDetail() {
   const isFull = spotsLeft !== null && spotsLeft <= 0;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{event.title}</h1>
-      </div>
+    <>
+      <div className="mx-auto max-w-5xl px-4 py-8">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">{event.title}</h1>
+        </div>
 
-      <div className="mb-6 overflow-hidden rounded border border-slate-200">
-        <img
-          src={imageUrl}
-          alt={event.title}
-          className="h-56 w-full object-cover sm:h-72"
-          loading="lazy"
-          decoding="async"
-        />
-      </div>
+        <div className="mb-6 overflow-hidden rounded border border-slate-200">
+          <img
+            src={imageUrl}
+            alt={event.title}
+            className="h-56 w-full object-cover sm:h-72"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
 
-      <div className="grid gap-6">
-        <section className="grid gap-3 rounded border border-slate-200 p-4 text-sm">
-          <h2 className="text-lg font-semibold">Om arrangementet</h2>
-          <div className="grid gap-2 md:grid-cols-2">
-            <p>
-              <span className="font-semibold">Dato:</span> {formatDate(event.startTime)}
-            </p>
-            <p>
-              <span className="font-semibold">Sted:</span> {event.location ?? "Ikke satt"}
-            </p>
-            <p>
-              <span className="font-semibold">Start:</span> {formatDateTime(event.startTime)}
-            </p>
-            <p>
-              <span className="font-semibold">Slutt:</span> {formatDateTime(event.endTime)}
-            </p>
-            <p>
-              <span className="font-semibold">Maks antall:</span>{" "}
-              {typeof event.maxAttendees === "number" ? event.maxAttendees : "Ikke satt"}
-            </p>
-            <p>
-              <span className="font-semibold">Publisert:</span> {event.isPublished ? "Ja" : "Nei"}
-            </p>
-          </div>
-
-          <div className="border-t border-slate-200 pt-3">
-            <h3 className="mb-2 text-base font-semibold">Beskrivelse</h3>
-            <p className="leading-6">
-              {event.description ?? "Ingen beskrivelse tilgjengelig."}
-            </p>
-          </div>
-
-          <div className="border-t border-slate-200 pt-3">
-            <h3 className="mb-2 text-base font-semibold">Påmelding</h3>
-
-            {spotsLeft !== null && (
-              <p className="mb-3 text-xs font-medium text-slate-600">
-                {isFull
-                  ? "Fullt"
-                  : `${spotsLeft} ${spotsLeft === 1 ? "plass" : "plasser"} igjen`}
+        <div className="grid gap-6">
+          <section className="grid gap-3 rounded border border-slate-200 p-4 text-sm">
+            <h2 className="text-lg font-semibold">Om arrangementet</h2>
+            <div className="grid gap-2 md:grid-cols-2">
+              <p>
+                <span className="font-semibold">Dato:</span> {formatDate(event.startTime)}
               </p>
-            )}
+              <p>
+                <span className="font-semibold">Sted:</span> {event.location ?? "Ikke satt"}
+              </p>
+              <p>
+                <span className="font-semibold">Start:</span> {formatDateTime(event.startTime)}
+              </p>
+              <p>
+                <span className="font-semibold">Slutt:</span> {formatDateTime(event.endTime)}
+              </p>
+              <p>
+                <span className="font-semibold">Maks antall:</span>{" "}
+                {typeof event.maxAttendees === "number" ? event.maxAttendees : "Ikke satt"}
+              </p>
+              <p>
+                <span className="font-semibold">Publisert:</span> {event.isPublished ? "Ja" : "Nei"}
+              </p>
+            </div>
 
-            {!user ? (
-              <div className="space-y-3">
-                <p>Logg inn med Feide for å melde deg på.</p>
+            <div className="border-t border-slate-200 pt-3">
+              <h3 className="mb-2 text-base font-semibold">Beskrivelse</h3>
+              <p className="leading-6">
+                {event.description ?? "Ingen beskrivelse tilgjengelig."}
+              </p>
+            </div>
+
+            <div className="border-t border-slate-200 pt-3">
+              <h3 className="mb-2 text-base font-semibold">Påmelding</h3>
+
+              {spotsLeft !== null && (
+                <p className="mb-3 text-xs font-medium text-slate-600">
+                  {isFull
+                    ? "Fullt"
+                    : `${spotsLeft} ${spotsLeft === 1 ? "plass" : "plasser"} igjen`}
+                </p>
+              )}
+
+              {!user ? (
+                <div className="space-y-3">
+                  <p>Logg inn med Feide for å melde deg på.</p>
+                  <button
+                    onClick={() => authService.startLogin()}
+                    className="rounded bg-slate-900 px-4 py-2 font-semibold text-white disabled:opacity-50"
+                  >
+                    Logg inn og meld deg på
+                  </button>
+                </div>
+              ) : registrationLoading ? (
+                <p>Sjekker påmeldingsstatus...</p>
+              ) : registration ? (
+                <div className="space-y-3">
+                  <p className="text-green-600 font-medium">
+                    Du er påmeldt arrangementet.
+                  </p>
+                  <p className="text-sm text-slate-600">
+                    <span className="font-semibold">Status:</span> {registration.att_status}
+                  </p>
+                  <p className="text-sm text-slate-600">
+                    <span className="font-semibold">Påmeldingsfrist:</span> {formatDateTime(registration.deadline)}
+                  </p>
+                  <button
+                    onClick={() => setConfirmAction("unregister")}
+                    disabled={submitting}
+                    className="rounded border border-red-300 px-4 py-2 font-semibold text-red-700 disabled:opacity-50"
+                  >
+                    {submitting ? "Melder av..." : "Meld deg av"}
+                  </button>
+                </div>
+              ) : isDeadlinePassed ? (
+                <div>
+                  <p className="text-slate-600">Påmelding er stoppet.</p>
+                </div>
+              ) : isFull ? (
+                <div>
+                  <p className="text-slate-600">Arrangementet er fullt.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p>Plassen din reserveres med en gang du melder deg på.</p>
+                  <button
+                    onClick={() => setConfirmAction("register")}
+                    disabled={submitting}
+                    className="rounded bg-slate-900 px-4 py-2 font-semibold text-white disabled:opacity-50"
+                  >
+                    {submitting ? "Melder på..." : "Meld deg på"}
+                  </button>
+                </div>
+              )}
+
+              {registrationError && (
+                <p className="text-red-600">Feil: {registrationError}</p>
+              )}
+            </div>
+          </section>
+        </div>
+
+        {confirmAction && (
+          <div
+            className="fixed inset-0 flex items-center justify-center p-4"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setConfirmAction(null);
+              }
+            }}
+          >
+            <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-lg">
+              <h2 className="mb-4 text-lg font-bold">
+                {confirmAction === "register" ? "Bekreft påmelding" : "Bekreft avmelding"}
+              </h2>
+              <p className="mb-6 text-sm text-slate-600">
+                {confirmAction === "register"
+                  ? "Er du sikker på at du vil melde deg på dette arrangementet?"
+                  : "Er du sikker på at du vil melde deg av dette arrangementet?"}
+              </p>
+              <div className="flex justify-end gap-2">
                 <button
-                  onClick={() => authService.startLogin()}
-                  className="rounded bg-slate-900 px-4 py-2 font-semibold text-white disabled:opacity-50"
+                  onClick={() => setConfirmAction(null)}
+                  className="rounded border border-slate-300 px-4 py-2 font-semibold text-slate-900 hover:bg-slate-50"
                 >
-                  Logg inn og meld deg på
+                  Avbryt
                 </button>
-              </div>
-            ) : registrationLoading ? (
-              <p>Sjekker påmeldingsstatus...</p>
-            ) : registration ? (
-              <div className="space-y-3">
-                <p className="text-green-600 font-medium">
-                  Du er påmeldt arrangementet.
-                </p>
-                <p className="text-sm text-slate-600">
-                  <span className="font-semibold">Status:</span> {registration.att_status}
-                </p>
-                <p className="text-sm text-slate-600">
-                  <span className="font-semibold">Påmeldingsfrist:</span> {formatDateTime(registration.deadline)}
-                </p>
                 <button
-                  onClick={() => setConfirmAction("unregister")}
+                  onClick={() =>
+                    void (confirmAction === "register"
+                      ? handleRegister()
+                      : handleUnregister())
+                  }
                   disabled={submitting}
-                  className="rounded border border-red-300 px-4 py-2 font-semibold text-red-700 disabled:opacity-50"
+                  className={`rounded px-4 py-2 font-semibold text-white disabled:opacity-50 ${
+                    confirmAction === "register"
+                      ? "bg-slate-900 hover:bg-slate-800"
+                      : "bg-red-700 hover:bg-red-800"
+                  }`}
                 >
-                  {submitting ? "Melder av..." : "Meld deg av"}
+                  {submitting
+                    ? confirmAction === "register"
+                      ? "Melder på..."
+                      : "Melder av..."
+                    : confirmAction === "register"
+                      ? "Meld deg på"
+                      : "Meld deg av"}
                 </button>
               </div>
-            ) : isDeadlinePassed ? (
-              <div>
-                <p className="text-slate-600">Påmelding er stoppet.</p>
-              </div>
-            ) : isFull ? (
-              <div>
-                <p className="text-slate-600">Arrangementet er fullt.</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <p>Plassen din reserveres med en gang du melder deg på.</p>
-                <button
-                  onClick={() => setConfirmAction("register")}
-                  disabled={submitting}
-                  className="rounded bg-slate-900 px-4 py-2 font-semibold text-white disabled:opacity-50"
-                >
-                  {submitting ? "Melder på..." : "Meld deg på"}
-                </button>
-              </div>
-            )}
-
-            {registrationError && (
-              <p className="text-red-600">Feil: {registrationError}</p>
-            )}
-          </div>
-        </section>
-      </div>
-
-      {confirmAction && (
-        <div
-          className="fixed inset-0 flex items-center justify-center p-4"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setConfirmAction(null);
-            }
-          }}
-        >
-          <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-lg">
-            <h2 className="mb-4 text-lg font-bold">
-              {confirmAction === "register" ? "Bekreft påmelding" : "Bekreft avmelding"}
-            </h2>
-            <p className="mb-6 text-sm text-slate-600">
-              {confirmAction === "register"
-                ? "Er du sikker på at du vil melde deg på dette arrangementet?"
-                : "Er du sikker på at du vil melde deg av dette arrangementet?"}
-            </p>
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setConfirmAction(null)}
-                className="rounded border border-slate-300 px-4 py-2 font-semibold text-slate-900 hover:bg-slate-50"
-              >
-                Avbryt
-              </button>
-              <button
-                onClick={() =>
-                  void (confirmAction === "register"
-                    ? handleRegister()
-                    : handleUnregister())
-                }
-                disabled={submitting}
-                className={`rounded px-4 py-2 font-semibold text-white disabled:opacity-50 ${
-                  confirmAction === "register"
-                    ? "bg-slate-900 hover:bg-slate-800"
-                    : "bg-red-700 hover:bg-red-800"
-                }`}
-              >
-                {submitting
-                  ? confirmAction === "register"
-                    ? "Melder på..."
-                    : "Melder av..."
-                  : confirmAction === "register"
-                    ? "Meld deg på"
-                    : "Meld deg av"}
-              </button>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+      <Footer />
+    </>
   );
 }

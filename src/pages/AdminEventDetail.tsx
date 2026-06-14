@@ -76,7 +76,7 @@ export default function AdminEventDetail() {
 
     const dateValidationError = validateEventDateRange(
       formState.startTime,
-      formState.endTime || null,
+      formState.endTime ?? null,
     );
 
     if (dateValidationError) {
@@ -90,10 +90,10 @@ export default function AdminEventDetail() {
       await saveEvent({
         ...formState,
         title,
-        description: formState.description?.trim() || null,
-        location: formState.location?.trim() || null,
+        description: formState.description?.trim() ?? null,
+        location: formState.location?.trim() ?? null,
         startTime: formState.startTime,
-        endTime: formState.endTime || null,
+        endTime: formState.endTime ?? null,
       });
       setDraftFormState(null);
     } catch {

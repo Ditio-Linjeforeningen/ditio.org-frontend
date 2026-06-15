@@ -112,7 +112,7 @@ export default function AdminEventDetail() {
 
     try {
       await removeEvent();
-      navigate("/admin/events");
+      await navigate("/admin/events");
     } catch {
       // Hooken setter feilmelding selv.
     }
@@ -143,6 +143,30 @@ export default function AdminEventDetail() {
       updater(prev ?? buildFormStateFromEvent(event)),
     );
   };
+
+  const handleDeleteRegistration = async () => {
+    if (!selectedRegistration) return;
+
+    setDeleteRegistrationError(null);
+    setDeletingRegistration(true);
+
+    try {
+      await unregisterFromEvent(selectedRegistration.eventRegId);
+      setDeletedRegistrationIds((prev) => {
+        const next = new Set(prev);
+        next.add(selectedRegistration.eventRegId);
+        return next;
+      });
+      setSelectedRegistration(null);
+      setConfirmDeleteReg(false);
+    } catch (err) {
+      setDeleteRegistrationError(
+          err instanceof Error ? err.message : "Kunne ikke slette påmelding.",
+      );
+    } finally {
+      setDeletingRegistration(false);
+    }
+  }
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
@@ -425,27 +449,7 @@ export default function AdminEventDetail() {
                 Avbryt
               </button>
               <button
-                onClick={async () => {
-                  setDeleteRegistrationError(null);
-                  setDeletingRegistration(true);
-
-                  try {
-                    await unregisterFromEvent(selectedRegistration.eventRegId);
-                    setDeletedRegistrationIds((prev) => {
-                      const next = new Set(prev);
-                      next.add(selectedRegistration.eventRegId);
-                      return next;
-                    });
-                    setSelectedRegistration(null);
-                    setConfirmDeleteReg(false);
-                  } catch (err) {
-                    setDeleteRegistrationError(
-                      err instanceof Error ? err.message : "Kunne ikke slette påmelding.",
-                    );
-                  } finally {
-                    setDeletingRegistration(false);
-                  }
-                }}
+                onClick={void handleDeleteRegistration()}
                 disabled={deletingRegistration}
                 className="rounded bg-red-700 px-4 py-2 font-semibold text-white hover:bg-red-800 disabled:opacity-50"
               >

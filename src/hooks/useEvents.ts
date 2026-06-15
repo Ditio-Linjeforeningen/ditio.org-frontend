@@ -31,7 +31,7 @@ export function useEvents(): FetchListState {
       }
     };
 
-    fetchData();
+    void fetchData();
   }, []);
 
   return { events, loading, error };
@@ -59,7 +59,7 @@ export function useEvent(id: string | undefined): FetchDetailState {
       }
     };
 
-    fetchData();
+    void fetchData();
   }, [id]);
 
   return { event, loading, error };
